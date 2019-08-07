@@ -2,7 +2,7 @@ web:
   build: .
   command: node index-db.js
   ports:
-    - "3000:3000"
+    - "8080:8080"
   links:
     - db
   environment:
@@ -11,7 +11,7 @@ web:
     MYSQL_PASSWORD: mysecurepass
     MYSQL_HOST: db
 db:
-  image: orchardup/mysql
+  image: mysql
   ports:
     - "3306:3306"
   environment:
