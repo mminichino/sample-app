@@ -1,8 +1,9 @@
 var express = require('express');
 var app = express();
+var http = require('http');
 
 app.get('/', function (req, res) {
-  res.render(index);
+  res.render('index.html');
 });
 
 var server = app.listen(8080, function () {
