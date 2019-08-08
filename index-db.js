@@ -11,6 +11,22 @@ var visitcounter = 0;
 var mysql = require("mysql");
 var con = mysql.createConnection({ host: process.env.MYSQL_HOST, user: process.env.MYSQL_USER, password: process.env.MYSQL_PASSWORD, database: process.env.MYSQL_DATABASE});
 
+con.connect(function(err){
+  if(err){
+    console.log('Error connecting to database: ', err);
+    return;
+  }
+  console.log('Connection to database successful');
+  con.query('CREATE TABLE IF NOT EXISTS visits (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, ts BIGINT)',function(err) {
+    if(err) throw err;
+  });
+  console.log('Inserting data into visits table');
+  con.query('INSERT INTO visits (ts) values (?)', Date.now(),function(err, dbRes) {
+    if(err) throw err;
+    visitcounter = dbRes.insertId;
+  });
+});
+
 console.log("Starting web server on port " + port);
 
 http.createServer( function(req, res) {
@@ -34,22 +50,6 @@ http.createServer( function(req, res) {
     ".woff": "application/font-woff",
     ".woff2": "application/font-woff2"
   };
-
-  con.connect(function(err){
-    if(err){
-      console.log('Error connecting to database: ', err);
-      return;
-    }
-    console.log('Connection to database successful');
-    con.query('CREATE TABLE IF NOT EXISTS visits (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, ts BIGINT)',function(err) {
-      if(err) throw err;
-    });
-  });
-
-  con.query('INSERT INTO visits (ts) values (?)', Date.now(),function(err, dbRes) {
-    if(err) throw err;
-    visitcounter = dbRes.insertId;
-  });
 
   var validMimeType = true;
   var mimeType = validExtensions[ext];
