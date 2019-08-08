@@ -7,7 +7,7 @@ var http = require("http");
 var path = require("path");
 var fs = require("fs");
 var checkMimeType = true;
-var visitcounter = 0;
+// visitcounter = 0;
 var mysql = require("mysql");
 var con = mysql.createConnection({ host: process.env.MYSQL_HOST, user: process.env.MYSQL_USER, password: process.env.MYSQL_PASSWORD, database: process.env.MYSQL_DATABASE});
 
@@ -19,11 +19,6 @@ con.connect(function(err){
   console.log('Connection to database successful');
   con.query('CREATE TABLE IF NOT EXISTS visits (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, ts BIGINT)',function(err) {
     if(err) throw err;
-  });
-  console.log('Inserting data into visits table');
-  con.query('INSERT INTO visits (ts) values (?)', Date.now(),function(err, dbRes) {
-    if(err) throw err;
-    visitcounter = dbRes.insertId;
   });
 });
 
@@ -84,11 +79,19 @@ function getFile(localPath, res, mimeType) {
         res.setHeader("Content-Type", mimeType);
       }
       if(mimeType == "text/html") {
-        contents = contents.toString()
-        contents = contents.replace("{{number}}", visitcounter);
+          console.log('Inserting data into visits table');
+          con.query('INSERT INTO visits (ts) values (?)', Date.now(),function(err, dbRes) {
+          if (err) throw err;
+          contents = contents.toString()
+          contents = contents.replace("{{number}}", dbRes.insertId);
+          console.log("Inside loop visits " + dbRes.insertId)
+          res.statusCode = 200;
+          res.end(contents);
+        });
+      } else {
+          res.statusCode = 200;
+          res.end(contents);
       }
-      res.statusCode = 200;
-      res.end(contents);
     } else {
       res.writeHead(500);
       res.end();
