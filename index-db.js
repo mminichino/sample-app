@@ -79,12 +79,10 @@ function getFile(localPath, res, mimeType) {
         res.setHeader("Content-Type", mimeType);
       }
       if(mimeType == "text/html") {
-          console.log('Inserting data into visits table');
           con.query('INSERT INTO visits (ts) values (?)', Date.now(),function(err, dbRes) {
           if (err) throw err;
           contents = contents.toString()
           contents = contents.replace("{{number}}", dbRes.insertId);
-          console.log("Inside loop visits " + dbRes.insertId)
           res.statusCode = 200;
           res.end(contents);
         });

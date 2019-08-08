@@ -17,7 +17,6 @@ http.createServer( function(req, res) {
   if (filename == '/') {
     filename = "/index.html";
   }
-  console.log("filename: " + filename)
   var ext = path.extname(filename);
   var localPath = __dirname;
   var validExtensions = {
