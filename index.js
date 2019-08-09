@@ -65,17 +65,18 @@ http.createServer( function(req, res) {
 function getFile(localPath, res, mimeType) {
   fs.readFile(localPath, function(err, contents) {
     if(!err) {
-      res.setHeader("Content-Length", contents.length);
       if (mimeType != undefined) {
         res.setHeader("Content-Type", mimeType);
       }
+      res.statusCode = 200;
       if(mimeType == "text/html") {
-          contents = contents.toString()
+          contents = contents.toString('utf8');
           contents = contents.replace("{{version}}", appversion);
-          res.statusCode = 200;
+          contents = Buffer.from(contents, 'utf8');
+          res.setHeader("Content-Length", contents.length);
           res.end(contents);
       } else {
-        res.statusCode = 200;
+        res.setHeader("Content-Length", contents.length);
         res.end(contents);
       }
     } else {

@@ -77,25 +77,36 @@ http.createServer( function(req, res) {
 
 }).listen(port);
 
+async function updateContents(contents) {
+  var data = await new Promise((resolve, reject)=>{
+    con.query('INSERT INTO visits (ts) values (?)', Date.now(), function (err, dbRes) {
+      if (err) reject(err);
+      contents = contents.toString('utf8');
+      contents = contents.replace("{{number}}", dbRes.insertId);
+      contents = contents.replace("{{version}}", appversion);
+      contents = Buffer.from(contents, 'utf8');
+      resolve(contents);
+    });
+  });
+  return data;
+}
+
 function getFile(localPath, res, mimeType) {
   fs.readFile(localPath, function(err, contents) {
     if(!err) {
-      res.setHeader("Content-Length", contents.length);
       if (mimeType != undefined) {
         res.setHeader("Content-Type", mimeType);
       }
+      res.statusCode = 200;
       if(mimeType == "text/html") {
-          con.query('INSERT INTO visits (ts) values (?)', Date.now(),function(err, dbRes) {
-          if (err) throw err;
-          contents = contents.toString()
-          contents = contents.replace("{{number}}", dbRes.insertId);
-          contents = contents.replace("{{version}}", appversion);
-          res.statusCode = 200;
+        (async function main(){
+          contents = await updateContents(contents);
+          res.setHeader("Content-Length", contents.length);
           res.end(contents);
-        });
+        })();
       } else {
-          res.statusCode = 200;
-          res.end(contents);
+        res.setHeader("Content-Length", contents.length);
+        res.end(contents);
       }
     } else {
       res.writeHead(500);
