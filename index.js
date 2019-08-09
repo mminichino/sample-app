@@ -7,6 +7,12 @@ var path = require("path");
 var fs = require("fs");
 var checkMimeType = true;
 
+if (process.env.APPVERSION != undefined) {
+  var appversion = process.env.APPVERSION
+} else {
+  var appversion = 1
+}
+
 console.log("Starting web server on port " + port);
 
 http.createServer( function(req, res) {
@@ -63,8 +69,15 @@ function getFile(localPath, res, mimeType) {
       if (mimeType != undefined) {
         res.setHeader("Content-Type", mimeType);
       }
-      res.statusCode = 200;
-      res.end(contents);
+      if(mimeType == "text/html") {
+          contents = contents.toString()
+          contents = contents.replace("{{version}}", appversion);
+          res.statusCode = 200;
+          res.end(contents);
+      } else {
+        res.statusCode = 200;
+        res.end(contents);
+      }
     } else {
       res.writeHead(500);
       res.end();

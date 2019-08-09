@@ -11,6 +11,12 @@ var checkMimeType = true;
 var mysql = require("mysql");
 var con = mysql.createConnection({ host: process.env.MYSQL_HOST, user: process.env.MYSQL_USER, password: process.env.MYSQL_PASSWORD, database: process.env.MYSQL_DATABASE});
 
+if (process.env.APPVERSION != undefined) {
+  var appversion = process.env.APPVERSION
+} else {
+  var appversion = 1
+}
+
 con.connect(function(err){
   if(err){
     console.log('Error connecting to database: ', err);
@@ -83,6 +89,7 @@ function getFile(localPath, res, mimeType) {
           if (err) throw err;
           contents = contents.toString()
           contents = contents.replace("{{number}}", dbRes.insertId);
+          contents = contents.replace("{{version}}", appversion);
           res.statusCode = 200;
           res.end(contents);
         });
