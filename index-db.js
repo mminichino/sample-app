@@ -99,8 +99,12 @@ function getFile(localPath, res, mimeType) {
       }
       res.statusCode = 200;
       if(mimeType == "text/html") {
-        (async function main(){
-          contents = await updateContents(contents);
+        (async function f(){
+          try {
+            contents = await updateContents(contents);
+          } catch(err) {
+            throw err;
+          }
           res.setHeader("Content-Length", contents.length);
           res.end(contents);
         })();
