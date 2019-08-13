@@ -7,26 +7,13 @@ var http = require("http");
 var path = require("path");
 var fs = require("fs");
 var checkMimeType = true;
-// visitcounter = 0;
 var mysql = require("mysql");
-var con = mysql.createConnection({ host: process.env.MYSQL_HOST, user: process.env.MYSQL_USER, password: process.env.MYSQL_PASSWORD, database: process.env.MYSQL_DATABASE});
 
 if (process.env.APPVERSION != undefined) {
   var appversion = process.env.APPVERSION
 } else {
   var appversion = 1
 }
-
-con.connect(function(err){
-  if(err){
-    console.log('Error connecting to database: ', err);
-    return;
-  }
-  console.log('Connection to database successful');
-  con.query('CREATE TABLE IF NOT EXISTS visits (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, ts BIGINT)',function(err) {
-    if(err) throw err;
-  });
-});
 
 console.log("Starting web server on port " + port);
 
@@ -77,9 +64,36 @@ http.createServer( function(req, res) {
 
 }).listen(port);
 
+async function connectToDatabase(connection) {
+  await new Promise((resolve,reject)=>{
+    connection.connect(function(err){
+    if(err){
+      console.log('Error connecting to database: ', err);
+      reject(err);
+    }
+    console.log('Connection to database successful');
+      connection.query('CREATE TABLE IF NOT EXISTS visits (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, ts BIGINT)',function(err) {
+      if(err) reject(err);
+    });
+  });
+  resolve(connection);
+  });
+}
+
 async function updateContents(contents) {
+  var connection = mysql.createConnection({ host: process.env.MYSQL_HOST,
+                                                   user: process.env.MYSQL_USER,
+                                                   password: process.env.MYSQL_PASSWORD,
+                                                   database: process.env.MYSQL_DATABASE});
   var data = await new Promise((resolve, reject)=>{
-    con.query('INSERT INTO visits (ts) values (?)', Date.now(), function (err, dbRes) {
+    (async function f(){
+      try {
+        connection = await connectToDatabase(connection);
+      } catch(err) {
+        reject(err);
+      }
+    })();
+    connection.query('INSERT INTO visits (ts) values (?)', Date.now(), function (err, dbRes) {
       if (err) reject(err);
       contents = contents.toString('utf8');
       contents = contents.replace("{{number}}", dbRes.insertId);
@@ -97,18 +111,21 @@ function getFile(localPath, res, mimeType) {
       if (mimeType != undefined) {
         res.setHeader("Content-Type", mimeType);
       }
-      res.statusCode = 200;
       if(mimeType == "text/html") {
         (async function f(){
           try {
             contents = await updateContents(contents);
           } catch(err) {
-            throw err;
+            res.writeHead(500);
+            res.end(err);
+            return;
           }
+          res.statusCode = 200;
           res.setHeader("Content-Length", contents.length);
           res.end(contents);
         })();
       } else {
+        res.statusCode = 200;
         res.setHeader("Content-Length", contents.length);
         res.end(contents);
       }
