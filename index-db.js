@@ -9,6 +9,7 @@ var fs = require("fs");
 var checkMimeType = true;
 var mysql = require("mysql");
 var useragent = require('express-useragent');
+var startTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
 if (process.env.APPVERSION != undefined) {
   var appversion = process.env.APPVERSION
@@ -121,7 +122,6 @@ async function updateContents(contents, req) {
       contents = contents.replace("{{podname}}", podName);
       var nodeName = process.env.NODE_NAME || "No Node Name";
       contents = contents.replace("{{nodename}}", nodeName);
-      var startTime = process.env.POD_START_TIME || "No Start Time" ;
       contents = contents.replace("{{starttime}}", startTime);
       contents = Buffer.from(contents, 'utf8');
       resolve(contents);
