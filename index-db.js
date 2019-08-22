@@ -101,6 +101,9 @@ async function updateContents(contents, req) {
       contents = contents.replace("{{version}}", appversion);
       var requestIp = req.connection.remoteAddress;
       requestIp = requestIp.replace("::ffff:","");
+      if ( req.headers['X-Forwarded-For'] != undefined ){
+        requestIp = req.headers['X-Forwarded-For'] + ", " + requestIp;
+      }
       contents = contents.replace("{{requestorip}}", requestIp);
       var source = req.headers['user-agent'],
       ua = useragent.parse(source);
