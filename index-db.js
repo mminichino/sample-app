@@ -119,6 +119,10 @@ async function updateContents(contents, req) {
       contents = contents.replace("{{browseros}}", ua.os);
       var podName = process.env.POD_NAME || "No Pod Name";
       contents = contents.replace("{{podname}}", podName);
+      var nodeName = process.env.NODE_NAME || "No Node Name";
+      contents = contents.replace("{{nodename}}", nodeName);
+      var startTime = process.env.POD_START_TIME || "No Start Time" ;
+      contents = contents.replace("{{starttime}}", startTime);
       contents = Buffer.from(contents, 'utf8');
       resolve(contents);
     });

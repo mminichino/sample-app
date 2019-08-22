@@ -16,8 +16,8 @@
 <font size="3" face="Courier New" >
 <center><table>
     <tr>
-        <td>Client IP Address:</td>
-        <td>{{requestorip}}</td>
+        <td>Remote IP Address:</td>
+        <td>{{requestorip}}*</td>
     </tr>
     <tr>
         <td>Device Type:</td>
@@ -35,7 +35,17 @@
         <td>Pod Name:</td>
         <td>{{podname}}</td>
     </tr>
+    <tr>
+        <td>Node Name:</td>
+        <td>{{nodename}}</td>
+    </tr>
+    <tr>
+        <td>Start Time:</td>
+        <td>{{starttime}}</td>
+    </tr>
 </table></center>
 </font>
+<br>
+<font size="2" face="Arial"><center>* With Istio this will be localhost or the load balancer internal address</center></font>
 </body>
 </html>
