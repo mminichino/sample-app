@@ -99,7 +99,9 @@ async function updateContents(contents, req) {
       contents = contents.toString('utf8');
       contents = contents.replace("{{number}}", dbRes.insertId);
       contents = contents.replace("{{version}}", appversion);
-      contents = contents.replace("{{requestorip}}", req.connection.remoteAddress);
+      var requestIp = req.connection.remoteAddress;
+      requestIp = requestIp.replace("::ffff:","");
+      contents = contents.replace("{{requestorip}}", requestIp);
       var source = req.headers['user-agent'],
       ua = useragent.parse(source);
       if (ua.isDesktop == true) {
