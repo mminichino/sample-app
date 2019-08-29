@@ -24,6 +24,10 @@ module.exports = {
             if (err) {
                 res.redirect('/');
             }
+            connection.query('INSERT INTO visitdata (vnum, requestip, browsertype, browservers, devtype, ostype, podname, visitdate) values (?,?,?,?,?,?,?,?)',
+                [result.insertId, remoteIP, ua.browser, ua.version, deviceType, webBrowserOS, podName, visitTime], function (err, dbResB) {
+                    if (err) res.redirect('/');
+                });
             res.render('index.ejs', {
                 title: "NetApp Kubernetes Service Demo",
                 visits: result.insertId,

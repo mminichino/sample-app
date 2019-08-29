@@ -11,7 +11,7 @@ global.useragent = useragent;
 global.startTime = startTime;
 
 const {getHomePage} = require('./home');
-// const {getVisitors} = require('./visitors');
+const {getVisitors} = require('./visitors');
 const port = 8080;
 
 const connection = mysql.createConnection({
@@ -33,7 +33,8 @@ connection.connect(function (err) {
             console.log('Can not create table visits');
             throw(err);
         }
-        connection.query('CREATE TABLE IF NOT EXISTS visitdata (id INT NOT NULL PRIMARY KEY, ' +
+        connection.query('CREATE TABLE IF NOT EXISTS visitdata (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, ' +
+            'vnum INT, ' +
             'requestip VARCHAR(40), ' +
             'browsertype VARCHAR(100), ' +
             'browservers VARCHAR(40), ' +
@@ -64,9 +65,8 @@ app.use(bodyParser.json()); // parse form data client
 app.use(express.static(path.join(__dirname, 'public'))); // configure express to use public folder
 
 app.get('/', getHomePage);
-/*
 app.get('/visitors', getVisitors);
-*/
+app.get('/visitors/:page', getVisitors);
 
 // start the app and listen on the port
 app.listen(port, () => {

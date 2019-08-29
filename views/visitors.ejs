@@ -1,0 +1,58 @@
+<% include header.ejs %>
+<script src="/js/moment.js"></script>
+<div class="table-wrapper">
+    <% if (visitors.length > 0) {%>
+        <table class="table table-hovered">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Remote IP</th>
+                <th scope="col">Browser</th>
+                <th scope="col">Browser Type</th>
+                <th scope="col">Device Type</th>
+                <th scope="col">OS</th>
+                <th scope="col">Pod Name</th>
+                <th scope="col">Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% visitors.forEach((visitor, index) => { %>
+                <tr>
+                    <th scope="row"><%= visitor.vnum %></th>
+                    <td><%= visitor.requestip %></td>
+                    <td><%= visitor.browsertype %></td>
+                    <td><%= visitor.browservers %></td>
+                    <td><%= visitor.devtype %></td>
+                    <td><%= visitor.ostype %></td>
+                    <td><%= visitor.podname %></td>
+                    <td><script>var m = moment(<%= visitor.visitdate %>); document.write(m.format("MMM DD YYYY, HH:mm:ss A"));</script></td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p class="text-center">No visitors found. <a href="/" >Back</a></p>
+    <% } %>
+</div>
+        <nav aria-label="Page navigation">
+        <% if (pages > 0) { %>
+            <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="/visitors/1">First</a></li>
+                <% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+                <% if (i !== 1) { %>
+                    <li class="page-item"><a class="page-link" href="/visitors/<%= i-1 %>">...</a></li>
+                <% } %>
+                <% for (; i <= (Number(current) + 4) && i <= pages; i++) { %>
+                        <li class="page-item"><a class="page-link" href="/visitors/<%= i %>"><%= i %></a></li>
+                    <% if (i == Number(current) + 4 && i < pages) { %>
+                        <li class="page-item"><a class="page-link" href="/visitors/<%= i+1 %>">...</a></li>
+                    <% } %>
+                <% } %>
+                    <li class="page-item"><a class="page-link" href="/visitors/<%= pages %>">Last</a></li>
+            </ul>
+        <% } %>
+        </nav>
+</div>
+</div>
+</body>
+</html>
