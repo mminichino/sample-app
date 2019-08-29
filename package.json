@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node index.js"
+    "start": "node index-static.js"
   },
   "engines": {
     "node": "^4.6.1"
@@ -11,6 +11,7 @@
   "dependencies": {
     "express": "^4.14.0",
     "mysql": "^2.10.2",
-    "express-useragent": "^1.0.13"
+    "express-useragent": "^1.0.13",
+    "ejs": "^2.6.2"
   }
 }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NetApp Kubernetes Service Demo</title>
+</head>
+<body>
+<h1><center>Welcome to NetApp Kubernetes</center></h1>
+<h2><center>You are visitor <%= visits %></center></h2>
+<center><img src="/Netapp_logo.png" alt="NetApp Logo" height="100" width="100"></center>
+<h2><center>Application Version: <%= version %></center></h2>
+<center><a href="https://cloud.netapp.com/home" target="_blank">NetApp Cloud Solutions</a></center>
+<br>
+<center><a href="https://www.netapp.com/us/products/converged-systems/hyper-converged-infrastructure.aspx" target="_bkank">NetApp HCI</a></center>
+<br>
+<font size="3" face="Courier New" >
+    <center><table>
+            <col width="800">
+            <col width="800">
+            <tr>
+                <td align="right" style="padding:0 15px 0 15px;">Remote IP Address: </td>
+                <td><%= requestip %>*</td>
+            </tr>
+            <tr>
+                <td align="right" style="padding:0 15px 0 15px;">Device Type: </td>
+                <td><%= devtype %></td>
+            </tr>
+            <tr>
+                <td align="right" style="padding:0 15px 0 15px;">Your Browser: </td>
+                <td><%= browser %></td>
+            </tr>
+            <tr>
+                <td align="right" style="padding:0 15px 0 15px;">Your OS: </td>
+                <td><%= browseros %></td>
+            </tr>
+            <tr>
+                <td align="right" style="padding:0 15px 0 15px;">Pod Name: </td>
+                <td><%= podname %></td>
+            </tr>
+            <tr>
+                <td align="right" style="padding:0 15px 0 15px;">Node Name: </td>
+                <td><%= nodename %></td>
+            </tr>
+            <tr>
+                <td align="right" style="padding:0 15px 0 15px;">Start Time: </td>
+                <td><%= starttime %></td>
+            </tr>
+        </table></center>
+</font>
+<br>
+<font size="2" face="Arial"><center>* With Istio this will be localhost or the load balancer internal address</center></font>
+</body>
+</html>
