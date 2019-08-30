@@ -12,6 +12,10 @@ global.startTime = startTime;
 
 const {getHomePage} = require('./home');
 const {getVisitors} = require('./visitors');
+//REST interface
+const {getRESTAPIVisitors} = require('./restapivisitors');
+const {getRESTAPIList} = require('./restapilist');
+//Container or Pod port
 const port = 8080;
 
 const connection = mysql.createConnection({
@@ -67,6 +71,10 @@ app.use(express.static(path.join(__dirname, 'public'))); // configure express to
 app.get('/', getHomePage);
 app.get('/visitors', getVisitors);
 app.get('/visitors/:page', getVisitors);
+app.get('/v1/visitors/count', getRESTAPIVisitors);
+app.post('/v1/visitors/count', getRESTAPIVisitors);
+app.get('/v1/visitors/list', getRESTAPIList);
+app.post('/v1/visitors/list', getRESTAPIList);
 
 // start the app and listen on the port
 app.listen(port, () => {
