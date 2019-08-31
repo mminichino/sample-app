@@ -4,6 +4,7 @@ module.exports = {
     getHomePage: (req, res) => {
         let query = "INSERT INTO visits (ts) values (?)"; // query database
         let visitTime = Date.now();
+        let remoteIP = '127.0.0.1';
         let source = req.headers['user-agent'],
             ua = useragent.parse(source);
         if (ua.isDesktop == true) {
@@ -13,7 +14,15 @@ module.exports = {
         } else {
             var deviceType = "Mobile";
         }
-        let remoteIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress.replace("::ffff:", "");
+        if (req.headers['x-forwarded-for'] !== undefined) {
+            remoteIP = req.headers['x-forwarded-for'];
+            let remoteIPs = remoteIP.split(',',2);
+            if(remoteIPs.length > 1) {
+                remoteIP = remoteIPs[0];
+            }
+        } else {
+            remoteIP = req.connection.remoteAddress.replace("::ffff:", "");
+        }
         let webBrowser = ua.browser + " " + ua.version;
         let webBrowserOS = ua.os;
         let podName = process.env.POD_NAME || "No Pod Name";
