@@ -13,7 +13,7 @@ module.exports = {
         } else {
             var deviceType = "Mobile";
         }
-        let remoteIP = req.connection.remoteAddress.replace("::ffff:", "");
+        let remoteIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress.replace("::ffff:", "");
         let webBrowser = ua.browser + " " + ua.version;
         let webBrowserOS = ua.os;
         let podName = process.env.POD_NAME || "No Pod Name";
