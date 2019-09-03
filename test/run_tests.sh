@@ -1,5 +1,6 @@
 #!/bin/sh
 #
+
 export PATH=$PATH:/usr/local/bin
 COMPOSE_ID=${JOB_NAME:-local}
 
