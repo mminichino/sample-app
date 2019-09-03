@@ -13,9 +13,10 @@ node {
 
     stage('Test image') {
 
-        app.inside {
-            sh '/usr/bin/curl http://127.0.0.1:8080'
-        }
+        sh 'docker-compose -f docker-compose-integration.yaml up --force-recreate --abort-on-container-exit'
+        sh 'curl http://127.0.0.1:8080 > /tmp/sampleapp.curl.test'
+        sh 'grep \\"Version: 2\\" /tmp/sampleapp.curl.test'
+        sh 'docker-compose -f docker-compose-integration.yaml down -v'
     }
 
     stage('Push image') {

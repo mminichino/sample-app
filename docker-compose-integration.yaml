@@ -1,0 +1,25 @@
+version: '2.1'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: sampleapp
+      MYSQL_USER: sampleapp
+      MYSQL_PASSWORD: password
+    expose:
+      - "3306"
+    network_mode: "host"
+  sampleapp:
+    depends_on:
+      - db
+    image: mminichino/sample-app
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: sampleapp
+      MYSQL_USER: sampleapp
+      MYSQL_PASSWORD: password
+      APPVERSION: 2
+    network_mode: "host"
+    command: ["node", "index.js"]
