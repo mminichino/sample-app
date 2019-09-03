@@ -1,20 +1,26 @@
-web:
-  build: .
-  command: node index-db.js
-  ports:
-    - "8080:8080"
-  links:
-    - db
-  environment:
-    MYSQL_DATABASE: myapp
-    MYSQL_USER: myapp
-    MYSQL_PASSWORD: mysecurepass
-    MYSQL_HOST: db
-db:
-  image: mysql
-  ports:
-    - "3306:3306"
-  environment:
-    MYSQL_DATABASE: myapp
-    MYSQL_USER: myapp
-    MYSQL_PASSWORD: mysecurepass
+version: '2.1'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: sampleapp
+      MYSQL_USER: sampleapp
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+  sampleapp:
+    links:
+      - db
+    image: mminichino/sample-app
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: sampleapp
+      MYSQL_USER: sampleapp
+      MYSQL_PASSWORD: password
+      APPVERSION: 2
+      MYSQL_HOST: db
+    command: ["node", "index.js"]
+    ports:
+      - "8080:8080"

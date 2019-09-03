@@ -8,11 +8,10 @@ services:
       MYSQL_DATABASE: sampleapp
       MYSQL_USER: sampleapp
       MYSQL_PASSWORD: password
-    expose:
-      - "3306"
-    network_mode: "host"
+    ports:
+      - "3306:3306"
   sampleapp:
-    depends_on:
+    links:
       - db
     image: mminichino/sample-app
     environment:
@@ -21,5 +20,7 @@ services:
       MYSQL_USER: sampleapp
       MYSQL_PASSWORD: password
       APPVERSION: 2
-    network_mode: "host"
+      MYSQL_HOST: db
     command: ["node", "index.js"]
+    ports:
+      - "8080:8080"
