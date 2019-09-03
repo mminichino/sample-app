@@ -1,10 +1,6 @@
 node {
     def app
 
-    environment {
-            PATH = "$PATH:/usr/local/bin"
-    }
-
     stage('Clone repository') {
 
         checkout scm
@@ -16,6 +12,10 @@ node {
     }
 
     stage('Test image') {
+
+        environment {
+                PATH = "$PATH:/usr/local/bin"
+        }
 
         sh 'docker-compose -f docker-compose-integration.yaml up --force-recreate --abort-on-container-exit'
         sh 'curl http://127.0.0.1:8080 > /tmp/sampleapp.curl.test'
