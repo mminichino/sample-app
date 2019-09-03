@@ -15,6 +15,7 @@ node {
 
         sh 'echo $PWD'
         sh 'ls -la'
+        sh 'echo $COMPOSE_FILE'
         sh '/usr/local/bin/docker-compose -f docker-compose-integration.yaml up --force-recreate --abort-on-container-exit'
         sh '/usr/bin/curl http://127.0.0.1:8080 > /tmp/sampleapp.curl.test'
         sh '/bin/grep \\"Version: 2\\" /tmp/sampleapp.curl.test'
