@@ -9,7 +9,14 @@ echo "Starting container..."
 docker run -d --name sampleapp-test -p 8080:8080 mminichino/sample-app node index-static.js
 [ $? -ne 0 ] && exit 1
 
-while ! nc -z localhost 8080; do
+CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sampleapp-test)
+if [ -z "$CONTAINER_IP" ]
+then
+   echo "Error can not get container IP"
+   exit 1
+fi
+
+while ! nc -z $CONTAINER_IP 8080; do
   COUNT=$(($COUNT+1))
   if [ $COUNT -gt $TIMEOUT ]
   then
@@ -20,7 +27,7 @@ while ! nc -z localhost 8080; do
 done
 
 while [ $RETRY -ge 0 ]; do
-curl http://127.0.0.1:8080 > /tmp/sampleapp.curl.test
+curl http://${CONTAINER_IP}:8080 > /tmp/sampleapp.curl.test
 grep "Version: 1" /tmp/sampleapp.curl.test
 if [ $? -ne 0 ]
 then
