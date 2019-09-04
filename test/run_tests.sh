@@ -32,7 +32,7 @@ else
    break
 fi
 RETRY=$(($RETRY-1))
-sleep 0.5
+sleep 1
 done
 
 echo "Stopping container..."
