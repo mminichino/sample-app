@@ -60,7 +60,7 @@ done
 
 while [ $RETRY -ge 0 ]; do
 curl http://${APP_CONTAINER_IP}:8080 > /tmp/sampleapp.curl.test
-grep "visitor 1" /tmp/sampleapp.curl.test
+grep "Redirecting" /tmp/sampleapp.curl.test
 if [ $? -ne 0 ]
 then
    echo "Test Failed"

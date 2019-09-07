@@ -1,0 +1,40 @@
+<% include minheader.ejs %>
+<p class="p-5"></p>
+<div class="container h-100">
+    <div class="row justify-content-center align-items-center h-100">
+    <aside class="col-sm-4">
+    <div class="card">
+    <article class="card-body">
+        <h4 class="card-title text-center mb-4 mt-1">Sign in</h4>
+        <hr>
+        <% if (failure === 1) { %>
+        <p class="text-danger text-center">Login unsuccessful. Please try again.</p>
+        <% } %>
+        <form action="/login" method="post">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                    </div>
+                    <input name="username" class="form-control" placeholder="username" type="text">
+                </div> <!-- input-group.// -->
+            </div> <!-- form-group// -->
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                    </div>
+                    <input name="password" class="form-control" placeholder="******" type="password">
+                </div> <!-- input-group.// -->
+            </div> <!-- form-group// -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block"> Login  </button>
+            </div> <!-- form-group// -->
+        </form>
+    </article>
+    </div>
+    </aside>
+    </div>
+</div>
+</body>
+</html>

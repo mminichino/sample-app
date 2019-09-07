@@ -23,7 +23,6 @@ module.exports = {
         }
 
         var query = "SELECT * FROM visitdata WHERE id BETWEEN " + endRow + " AND " + startRow + " ORDER BY id DESC"; // query database
-            console.log(query);
 
         // execute primary query
         connection.query(query, (err, result) => {
