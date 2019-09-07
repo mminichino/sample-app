@@ -1,4 +1,8 @@
-<% include header.ejs %>
+<% if (authstatus === 1) { %>
+    <% include header.ejs %>
+<% } else { %>
+    <% include minheader.ejs %>
+<% } %>
 <blockquote class="blockquote text-center">
     <div class="container">
     <h2>Welcome to NetApp Kubernetes</h2>

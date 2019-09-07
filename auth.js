@@ -1,21 +1,71 @@
 // Auth Module
 const jwt = require('jsonwebtoken');
 const config = require('./config');
+const bcrypt = require('bcryptjs');
 
 module.exports = {
-    checkToken: (req, res, next) => {
-        let token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'] || req.headers['authorization'];
-        console.log(req.headers);
-        if (token.startsWith('Bearer ')) {
-            token = token.slice(7, token.length);
+    getToken: (req, res) => {
+        let timestamp = Date.now();
+        if (req.body.username && req.body.password) {
+            let query = "SELECT username, password FROM accounts WHERE username = '" + req.body.username + "'";
+            connection.query(query, (err, result) => {
+                if (err) throw(err);
+                    if (result.length !== 0) {
+                        bcrypt.compare(req.body.password, result[0].password, function (err, check) {
+                            if (check === true) {
+                                let token = jwt.sign({username: req.body.username},
+                                    config.jwtSecret,
+                                    {expiresIn: '24h'}
+                                );
+                                res.json({
+                                    responseTime: timestamp,
+                                    status: "success",
+                                    token: token
+                                });
+                            } else {
+                                res.json({
+                                    responseTime: timestamp,
+                                    status: "failure",
+                                    message: {
+                                        text: "Credentials invalid"
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        res.json({
+                            responseTime: timestamp,
+                            status: "failure",
+                            message: {
+                                text: "Credentials invalid"
+                            }
+                        });
+                    }
+            });
+        } else {
+            res.json({
+                status: "failure",
+                message: {
+                    text: "Invalid Parameters"
+                }
+            });
         }
-
+    },
+    checkToken: (req, res, next) => {
+        let token = (req.body && req.body.token) || (req.query && req.query.token) || req.headers['x-access-token'] || req.headers['authorization'];
+        let timestamp = Date.now();
         if (token) {
-            jwt.verify(token, config.secret, (err, decoded) => {
+            if (token.startsWith('Bearer ')) {
+                token = token.slice(7, token.length);
+            }
+            jwt.verify(token, config.jwtSecret, (err, decoded) => {
                 if (err) {
                     return res.json({
-                        success: false,
-                        message: 'Invalid Token Supplied'
+                        responseTime: timestamp,
+                        status: "failure",
+                        message: {
+                            text: "Credentials invalid"
+                        }
                     });
                 } else {
                     req.decoded = decoded;
@@ -23,7 +73,13 @@ module.exports = {
                 }
             });
         } else {
-            next();
+            return res.json({
+                responseTime: timestamp,
+                status: "failure",
+                message: {
+                    text: "Invalid Parameters"
+                }
+            });
         }
     },
     sessionChecker: (req, res, next) => {

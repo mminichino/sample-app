@@ -27,6 +27,11 @@ module.exports = {
         let webBrowserOS = ua.os;
         let podName = process.env.POD_NAME || "No Pod Name";
         let nodeName = process.env.NODE_NAME || "No Node Name";
+        if (req.session.user && req.cookies.user_sid){
+            var authenticated = 1;
+        } else {
+            var authenticated = 0;
+        }
 
         // execute query
         connection.query(query, visitTime, (err, result) => {
@@ -39,6 +44,7 @@ module.exports = {
                 });
             res.render('index.ejs', {
                 title: "NetApp Kubernetes Service Demo",
+                authstatus: authenticated,
                 visits: result.insertId,
                 version: appversion,
                 requestip: remoteIP,

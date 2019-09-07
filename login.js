@@ -21,6 +21,12 @@ module.exports = {
                             });
                         }
                     });
+                } else {
+                    status = 1;
+                    res.render('login.ejs', {
+                        title: "Login",
+                        failure: status
+                    });
                 }
             });
         } else {

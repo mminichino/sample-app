@@ -6,6 +6,11 @@ module.exports = {
         var perPage = 10;
         var page = req.params.page || 1;
         var tableCount = 0;
+        if (req.session.user && req.cookies.user_sid){
+            var authenticated = 1;
+        } else {
+            var authenticated = 0;
+        }
 
         // get row count
         connection.query(countQuery, (err, countResult) => {
@@ -31,6 +36,7 @@ module.exports = {
             }
             res.render('visitors.ejs', {
                 title: "Visitors",
+                authstatus: authenticated,
                 current: page,
                 pages: Math.ceil(tableCount/perPage),
                 start: startRow,

@@ -14,8 +14,20 @@
         margin-top: 50px;
     }
     .netapp-head-img {
-        width: 40px;
-        height: 40px;
+        width: 172px;
+        height: 30px;
     }
 </style>
 <body>
+<div class="page-wrapper">
+    <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1" >
+            <img src="/Netapp_logo.png" alt="NetApp Logo" class="netapp-head-img">
+        </span>
+            <% if (title == "Login") { %>
+            <a class="float-right" href="/guest" title="Logout">Guest Access</a>
+            <% } else { %>
+            <a class="float-right" href="/login" title="Logout">Login</a>
+            <% } %>
+    </nav>
+</div>

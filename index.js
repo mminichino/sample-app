@@ -21,6 +21,7 @@ const {checkToken} = require('./auth');
 const {sessionChecker} = require('./auth');
 const {sessionLogout} = require('./auth');
 //REST interface
+const {getToken} = require('./auth');
 const {getRESTAPIVisitors} = require('./restapivisitors');
 const {getRESTAPIList} = require('./restapilist');
 //Container or Pod port
@@ -119,16 +120,18 @@ app.use((req, res, next) => {
 });
 
 app.get('/', sessionChecker, getHomePage);
+app.get('/guest', getHomePage);
 app.get('/visitors', sessionChecker, getVisitors);
 app.get('/visitors/:page', sessionChecker, getVisitors);
 app.get('/login', getLoginPage);
 /* app.get('/login/:status', getLoginPage); */
 app.post('/login', getLoginPage);
 app.get('/logout', sessionLogout);
-app.get('/v1/visitors/count', getRESTAPIVisitors);
-app.post('/v1/visitors/count', getRESTAPIVisitors);
-app.get('/v1/visitors/list', getRESTAPIList);
-app.post('/v1/visitors/list', getRESTAPIList);
+app.post('/v1/authorize', getToken);
+/* app.get('/v1/visitors/count', getRESTAPIVisitors); */
+app.post('/v1/visitors/count', checkToken, getRESTAPIVisitors);
+/* app.get('/v1/visitors/list', getRESTAPIList); */
+app.post('/v1/visitors/list', checkToken, getRESTAPIList);
 
 // start the app and listen on the port
 app.listen(port, () => {
