@@ -1,5 +1,4 @@
 node {
-    def app
 
     stage('Clone repository') {
 
@@ -8,21 +7,10 @@ node {
 
     stage('Build image') {
 
-        app = docker.build("mminichino/sample-app")
-    }
-
-    stage('Test image') {
-
-      dir ('test') {
-        sh './run_tests.sh'
-      }
+        def app = docker.build("mminichino/sample-app:2.5.${env.BUILD_NUMBER}")
+        app.push()
+        app.push('latest')
 
     }
 
-    stage('Push image') {
-        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            app.push("2.4.${env.BUILD_NUMBER}")
-            app.push("latest")
-        }
-    }
 }
