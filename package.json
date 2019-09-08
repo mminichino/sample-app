@@ -17,6 +17,8 @@
     "config": "^3.2.2",
     "jsonwebtoken": "^8.5.1",
     "cookie-parser": "^1.4.4",
-    "express-session": "^1.16.2"
+    "express-session": "^1.16.2",
+    "redis": "^2.8.0",
+    "connect-redis": "^4.0.2"
   }
 }

@@ -10,6 +10,9 @@ const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const config = require('./config');
+const redis = require('redis');
+const redisClient = redis.createClient();
+const redisStore = require('connect-redis')(session);
 const startTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 global.useragent = useragent;
 global.startTime = startTime;
@@ -110,7 +113,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         expires: 600000
-    }
+    },
+    store: new redisStore({ host: process.env.REDIS_HOST, port: 6379, client: redisClient, ttl: 86400 })
 }));
 app.use((req, res, next) => {
     if (req.cookies.user_sid && !req.session.user) {
