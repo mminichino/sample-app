@@ -19,6 +19,7 @@
     "cookie-parser": "^1.4.4",
     "express-session": "^1.16.2",
     "redis": "^2.8.0",
-    "connect-redis": "^4.0.2"
+    "connect-redis": "^4.0.2",
+    "ioredis": "^4.14.0"
   }
 }

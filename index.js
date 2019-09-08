@@ -10,8 +10,13 @@ const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const config = require('./config');
-const redis = require('redis');
-const redisClient = redis.createClient(6379, process.env.REDIS_HOST);
+const redis = require('ioredis');
+const clustermode = process.env.CLUSTERMODE || 0;
+if (clustermode === 0) {
+    var redisClient = new redis({port: 6379, host: process.env.REDIS_HOST});
+} else {
+    var redisClient = new redis.Cluster([{port: 6379, host: process.env.REDIS_HOST}]);
+}
 const redisStore = require('connect-redis')(session);
 const startTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 global.useragent = useragent;
