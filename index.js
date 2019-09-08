@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const config = require('./config');
 const redis = require('redis');
-const redisClient = redis.createClient();
+const redisClient = redis.createClient(6379, process.env.REDIS_HOST);
 const redisStore = require('connect-redis')(session);
 const startTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 global.useragent = useragent;
@@ -114,7 +114,7 @@ app.use(session({
     cookie: {
         expires: 600000
     },
-    store: new redisStore({ host: process.env.REDIS_HOST, port: 6379, client: redisClient, ttl: 86400 })
+    store: new redisStore({client: redisClient})
 }));
 app.use((req, res, next) => {
     if (req.cookies.user_sid && !req.session.user) {
