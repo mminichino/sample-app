@@ -14,8 +14,8 @@ module.exports = {
         } else {
             var deviceType = "Mobile";
         }
-        if (req.headers['x-forwarded-for'] !== undefined) {
-            remoteIP = req.headers['x-forwarded-for'];
+        if (req.headers['x-forwarded-for'] !== undefined || req.headers['cf-connecting-ip'] !== undefined) {
+            remoteIP = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'];
             let remoteIPs = remoteIP.split(',',2);
             if(remoteIPs.length > 1) {
                 remoteIP = remoteIPs[0];

@@ -1,4 +1,5 @@
 // SampleApp Demo App
+console.log("Starting SampleApp");
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -11,11 +12,17 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const config = require('./config');
 const redis = require('ioredis');
-const clustermode = process.env.CLUSTERMODE || 0;
+const clustermode = config.clusterMode;
+
+console.log("MySQL Database Host: " + config.mysqlHost + " User/Database: " + config.mysqlUser + "/" + config.mysqlDatabase);
+console.log("Redis Host: " + config.redisHost + " Redis Port: " + config.redisPort);
+
 if (clustermode === 0) {
-    var redisClient = new redis({port: 6379, host: process.env.REDIS_HOST});
+    console.log("Redis connect in single instance mode");
+    var redisClient = new redis({port: config.redisPort, host: config.redisHost});
 } else {
-    var redisClient = new redis.Cluster([{port: 6379, host: process.env.REDIS_HOST}]);
+    console.log("Redis connect in cluster mode");
+    var redisClient = new redis.Cluster([{port: config.redisPort, host: config.redisHost}]);
 }
 const redisStore = require('connect-redis')(session);
 const startTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
@@ -36,10 +43,10 @@ const {getRESTAPIList} = require('./restapilist');
 const port = 8080;
 
 const connection = mysql.createConnection({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
+    host: config.mysqlHost,
+    user: config.mysqlUser,
+    password: config.mysqlPassword,
+    database: config.mysqlDatabase
 });
 
 connection.connect(function (err) {
