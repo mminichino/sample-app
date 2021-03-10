@@ -1,7 +1,7 @@
 <% if (authstatus === 1) { %>
-    <% include header.ejs %>
+    <%- include('header') %>
 <% } else { %>
-    <% include minheader.ejs %>
+    <%- include('minheader') %>
 <% } %>
 <blockquote class="blockquote text-center">
     <div class="container">
