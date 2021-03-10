@@ -13,23 +13,30 @@ const session = require('express-session');
 const config = require('./config');
 const redis = require('ioredis');
 const clustermode = config.clusterMode;
+let redisClient = null;
 
 console.log("MySQL Database Host: " + config.mysqlHost + " User/Database: " + config.mysqlUser + "/" + config.mysqlDatabase);
 console.log("Redis Host: " + config.redisHost + " Redis Port: " + config.redisPort);
 
 if (clustermode === 0) {
     console.log("Redis connect in single instance mode");
-    var redisClient = new redis({port: config.redisPort, host: config.redisHost});
+    redisClient = new redis({port: config.redisPort, host: config.redisHost});
 } else {
     console.log("Redis connect in cluster mode");
-    var redisClient = new redis.Cluster([{port: config.redisPort, host: config.redisHost}]);
+    redisClient = new redis.Cluster([{port: config.redisPort, host: config.redisHost}]);
 }
+
+redisClient.on('error', err => {
+    console.log('Redis Error ' + err);
+});
+
 const redisStore = require('connect-redis')(session);
 const startTime = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 global.useragent = useragent;
 global.startTime = startTime;
 
 const {getHomePage} = require('./home');
+const {getHealthCheckPage} = require('./healthz');
 const {getVisitors} = require('./visitors');
 const {getLoginPage} = require('./login');
 const {checkToken} = require('./auth');
@@ -94,14 +101,9 @@ connection.connect(function (err) {
         });
     });
 });
-/*
-bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash('$NetApp123$', salt, function (err, bcryptedPassword) {
-        console.log(bcryptedPassword)
-    });
-});
- */
+
 global.connection = connection;
+global.redisClient = redisClient;
 
 if (process.env.APPVERSION != undefined) {
     var appversion = process.env.APPVERSION;
@@ -137,6 +139,7 @@ app.use((req, res, next) => {
 
 app.get('/', sessionChecker, getHomePage);
 app.get('/guest', getHomePage);
+app.get('/healthz', getHealthCheckPage);
 app.get('/visitors', sessionChecker, getVisitors);
 app.get('/visitors/:page', sessionChecker, getVisitors);
 app.get('/login', getLoginPage);

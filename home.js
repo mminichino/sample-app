@@ -43,7 +43,7 @@ module.exports = {
                     if (err) res.redirect('/');
                 });
             res.render('index.ejs', {
-                title: "NetApp Kubernetes Service Demo",
+                title: "NetApp Kubernetes Demo",
                 authstatus: authenticated,
                 visits: result.insertId,
                 version: appversion,
