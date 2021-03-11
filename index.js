@@ -1,6 +1,7 @@
 // SampleApp Demo App
-console.log("Starting SampleApp");
+console.log("NetApp Kubernetes SampleApp");
 
+const pjson = require('./package.json');
 const ejsLint = require('ejs-lint');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -15,6 +16,7 @@ const config = require('./config');
 const redis = require('ioredis');
 const clustermode = config.clusterMode;
 let redisClient = null;
+let appversion = 1;
 
 console.log("MySQL Database Host: " + config.mysqlHost + " User/Database: " + config.mysqlUser + "/" + config.mysqlDatabase);
 console.log("Redis Host: " + config.redisHost + " Redis Port: " + config.redisPort);
@@ -106,14 +108,15 @@ connection.connect(function (err) {
 global.connection = connection;
 global.redisClient = redisClient;
 
-if (process.env.APPVERSION != undefined) {
-    var appversion = process.env.APPVERSION;
+if (process.env.APPVERSION !== undefined) {
+    appversion = process.env.APPVERSION;
 } else {
-    var appversion = 1;
+    appversion = pjson.version;
 }
 global.appversion = appversion;
 
 // configure app
+console.log("Starting Sample App v" + pjson.version);
 app.set('port', process.env.port || port); // set express to use this port
 app.set('views', __dirname + '/views'); // set express to look in this folder to render our view
 app.set('view engine', 'ejs'); // configure template engine
