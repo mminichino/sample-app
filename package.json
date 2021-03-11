@@ -1,6 +1,6 @@
 {
   "name": "sampleapp",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "private": true,
   "scripts": {
     "start": "node index.js"
